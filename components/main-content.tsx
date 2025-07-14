@@ -1,7 +1,6 @@
 "use client"
 
-import { SidebarInset } from "@/components/ui/sidebar"
-import { Menu, ChevronLeft } from "lucide-react"
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Dashboard } from "./sections/dashboard"
 import { UsersManagement } from "./sections/users-management"
@@ -19,11 +18,9 @@ import { UserProfile } from "./sections/user-profile"
 
 interface MainContentProps {
   activeSection: string
-  toggleSidebar?: () => void
-  isSidebarCollapsed?: boolean
 }
 
-export function MainContent({ activeSection, toggleSidebar, isSidebarCollapsed }: MainContentProps) {
+export function MainContent({ activeSection }: MainContentProps) {
   const renderSection = () => {
     switch (activeSection) {
       case "dashboard":
@@ -55,26 +52,18 @@ export function MainContent({ activeSection, toggleSidebar, isSidebarCollapsed }
     }
   }
 
+  const getSectionTitle = (section: string) => {
+    return section.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  }
+
   return (
-    <div className="flex-1 flex flex-col min-h-screen">
+    <SidebarInset>
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white sticky top-0 z-10">
-        <div className="flex items-center">
-          <button
-            onClick={toggleSidebar}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors -ml-1"
-            aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {isSidebarCollapsed ? (
-              <Menu className="h-5 w-5" />
-            ) : (
-              <ChevronLeft className="h-5 w-5" />
-            )}
-          </button>
-          <Separator orientation="vertical" className="mx-3 h-6" />
-          <h2 className="text-lg font-medium text-gray-900">
-            {activeSection.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-          </h2>
-        </div>
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <h2 className="text-lg font-medium text-gray-900">
+          {getSectionTitle(activeSection)}
+        </h2>
         <div className="flex-1">
           <Header />
         </div>
@@ -84,6 +73,6 @@ export function MainContent({ activeSection, toggleSidebar, isSidebarCollapsed }
           {renderSection()}
         </div>
       </main>
-    </div>
+    </SidebarInset>
   )
 }
